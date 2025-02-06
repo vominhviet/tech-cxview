@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  wordpress:
+    image: wordpress:latest  # Sử dụng image đã build trước đó
+    container_name: container_wordpress
+    ports:
+      - "8181:80"
+    environment:
+      WORDPRESS_DB_HOST: ${WORDPRESS_DB_HOST}
+      WORDPRESS_DB_USER: ${WORDPRESS_DB_USER}
+      WORDPRESS_DB_PASSWORD: ${WORDPRESS_DB_PASSWORD}
+      WORDPRESS_DB_NAME: ${WORDPRESS_DB_NAME}
+    volumes:
+      - ./html:/var/www/html
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.3  # Sử dụng image MySQL
+    container_name: container_mysql
+    environment:
+      MYSQL_DATABASE: ${WORDPRESS_DB_NAME}
+      MYSQL_USER: ${WORDPRESS_DB_USER}
+      MYSQL_PASSWORD: ${WORDPRESS_DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}  # Bạn có thể thêm biến này vào file .env
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data: {}
