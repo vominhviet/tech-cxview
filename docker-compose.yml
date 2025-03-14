@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: zabbix-mysql
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - zabbix-net
+
+  zabbix-server:
+    build: .
+    container_name: zabbix-server
+    restart: unless-stopped
+    env_file:
+      - .env
+    depends_on:
+      - mysql
+    ports:
+      - "10051:10051"
+    networks:
+      - zabbix-net
+
+  zabbix-web:
+    image: zabbix/zabbix-web-nginx-mysql:latest
+    container_name: zabbix-web
+    restart: unless-stopped
+    env_file:
+      - .env
+    depends_on:
+      - zabbix-server
+    ports:
+      - "8111:8080"
+#      - "8443:8443"
+    networks:
+      - zabbix-net
+
+networks:
+  zabbix-net:
+    driver: bridge
+
+volumes:
+  mysql_data:
