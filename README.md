@@ -45,7 +45,7 @@ services:
       - "2181:2181"
     init: true
     environment:
-      PASSWORD: "PAss$$123worD"
+      PASSWORD: "cxview"
       # This can be domain name or IP address
       DOMAIN: "www.mywebsite.com"
     container_name: kafkassl
