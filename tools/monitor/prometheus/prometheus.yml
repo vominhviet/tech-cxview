@@ -1,0 +1,103 @@
+# Prometheus Configuration file
+
+# Global configurations
+global:
+  scrape_interval: 15s  # Time between each scrape (default is 1 minute)
+  evaluation_interval: 15s  # Time to evaluate new rules (alerts) (default is 1 minute)
+
+# External labels (add additional information if necessary)
+  external_labels:
+    monitor: 'tepbac-monitor'  # Monitoring system name
+
+# Rule files
+rule_files:
+  - /etc/prometheus/alert-rules/*.yml  # Path to alert rule files mounted from host
+
+
+# Scrape configuration
+scrape_configs:
+  # Scrape node_exporter for system metrics
+  - job_name: 'node_exporter'
+    scrape_interval: 30s
+    scrape_timeout: 30s
+    static_configs:
+      - targets: ['node_exporter:9100']  # Address of node_exporter in your Docker or environment
+        labels:
+          instance: monitor-server
+          host: monitor-server
+          ip: 10.0.10.60
+          site: company
+          application: node_exporter
+          infrastructure: prometheus
+          company: company
+          teamowner: DevOps
+          environment: Prod
+          tag: infrastructure
+
+  # Scrape Prometheus itself (for self-monitoring)
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']  # Address of Prometheus itself
+        labels:
+          instance: monitor-server
+          host: monitor-server
+          ip: 10.0.10.60
+          site: company
+          application: node_exporter
+          infrastructure: prometheus
+          company: company
+          teamowner: DevOps
+          environment: Prod
+          tag: infrastructure
+
+  # Scrape Grafana metrics (if you want to monitor Grafana)
+  - job_name: 'grafana'
+    static_configs:
+      - targets: ['grafana:3000']  # Address of Grafana in Docker or your environment
+        labels:
+          instance: monitor-server
+          host: monitor-server
+          ip: 10.0.10.60
+          site: company
+          application: node_exporter
+          infrastructure: prometheus
+          company: company
+          teamowner: DevOps
+          environment: Prod
+          tag: infrastructure
+
+  # Scrape Alertmanager (if you have Alertmanager for alert management)
+  - job_name: 'alertmanager'
+    static_configs:
+      - targets: ['alertmanager:9093']  # Address of Alertmanager in Docker or your environment
+        labels:
+          instance: monitor-server
+          host: monitor-server
+          ip: 10.0.10.60
+          site: company
+          application: node_exporter
+          infrastructure: prometheus
+          company: company
+          teamowner: DevOps
+          environment: Prod
+          tag: infrastructure
+# Scrape config for another target (example)
+# You can add more scrape configs here for different services or endpoints
+# Example:
+#  - job_name: 'your-service'
+#    static_configs:
+#      - targets: ['your-service:port']
+
+
+# Alerting configuration
+alerting:
+  alertmanagers:
+  - scheme: http
+    timeout: 30s
+    static_configs:
+    - targets: 
+      - 'alertmanager:9093'  # Address of Alertmanager
+
+
+
+

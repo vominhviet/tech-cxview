@@ -1,0 +1,10 @@
+{{ define "text_alert_list" }}{{ range . }}
+{{ if .Labels.alertname }}<b>alertname:</b> {{ .Labels.alertname }}{{ end }}
+{{ if .Labels.severity }}<b>severity:</b> {{ .Labels.severity }}{{ end }}
+{{ if .Annotations.description }}<b>description:</b> {{ .Annotations.description }}{{ end }}
+{{ if .Labels.instance }}<b>instance:</b> {{ .Labels.instance }}{{ end }}
+{{ if .Labels.ip }}<b>ip:</b> {{ .Labels.ip }}{{ end }}
+{{ if .Labels.teamowner }}<b>teamowner:</b> {{ .Labels.teamowner }}{{ end }}
+{{ end }}{{ end }}
+{{ define "telegram.default.message" }}{{ if gt (len .Alerts.Firing) 0 }}<b>🔥 Company Infra Alerts Firing:</b> {{ template "text_alert_list" .Alerts.Firing }}{{ if gt (len .Alerts.Resolved) 0 }}
+{{ end }}{{ end }}{{ if gt (len .Alerts.Resolved) 0 }}<b>✅ Company Infra Alerts Resolved: </b>{{ template "text_alert_list" .Alerts.Resolved }}{{ end }}{{ end }}

@@ -1,0 +1,39 @@
+groups:
+  - name: targets
+    rules:
+      - alert: service_down
+        expr: up == 0
+        for: 30s
+        labels:
+          severity: critical
+        annotations:
+          summary: "Service {{ $labels.job_name }} is down"
+          description: "Service {{ $labels.job_name }} is down"
+  - name: host
+    rules:
+    - alert: Disk Usage High
+      expr: (node_filesystem_size_bytes{mountpoint="/"} - node_filesystem_avail_bytes{mountpoint="/"}) / node_filesystem_size_bytes{mountpoint="/"} > 0.8
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Root disk usage more than 80%"
+        description: "Root disk usage more than 80%"
+
+    - alert: CPU Usage High
+      expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "CPU usage more than 80%"
+        description: "CPU usage more than 80%"
+
+    - alert: Memory Usage High
+      expr: (node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes > 0.8
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Memory usage more than 80%"
+        description: "Memory usage more than 80%"

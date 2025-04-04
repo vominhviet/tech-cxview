@@ -1,0 +1,33 @@
+global:
+  resolve_timeout: 5m
+route:
+  group_by: ['alertname', 'instance','ip', 'host', 'job', 'severity', 'teamowner']
+  group_wait: 30s
+  group_interval: 30s
+  repeat_interval: 2m
+  receiver: teams-devops
+  routes:
+  - match:
+      severity: warning
+    continue: true
+    receiver: teams-devops
+  - match:
+      severity: critical
+    continue: true
+    receiver: teams-devops
+
+receivers:
+- name: 'teams-devops'
+  telegram_configs:
+  - send_resolved: true
+    http_config:
+      follow_redirects: true
+    api_url: "https://api.telegram.org"
+    bot_token: "7615ưhưef1:AAFyK2Uưefwewe0F4U6lbMzRhCJz1IcMguJ4"
+    chat_id: 5ưefewf
+    message: '{{ template "telegram.default.message" . }}'
+   # parse_mode: MarkdownV2
+    parse_mode: HTML
+#    parse_mode: Markdown
+templates:
+- '/etc/alertmanager/template/default.tmpl'

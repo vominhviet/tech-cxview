@@ -1,0 +1,7 @@
+{{ define "text_alert_list" }}{{ range . }}
+{{ if .Labels.instance }}<b>Tên thiết bị :</b> {{ .Labels.instance }}{{ end }}
+{{ if .Labels.ip }}<b>IP:</b> {{ .Labels.ip }}{{ end }}
+{{ if .Labels.teamowner }}<b>teamowner:</b> {{ .Labels.teamowner }}{{ end }}
+{{ end }}{{ end }}
+{{ define "telegram.default.message" }}{{ if gt (len .Alerts.Firing) 0 }}<b>🔥TRẠNG THÁI : Nguy Hiem </b> {{ template "text_alert_list" .Alerts.Firing }}{{ if gt (len .Alerts.Resolved) 0 }}
+{{ end }}{{ end }}{{ if gt (len .Alerts.Resolved) 0 }}<b>✅ TRẠNG THÁI : Phục Hồi : </b>{{ template "text_alert_list" .Alerts.Resolved }}{{ end }}{{ end }}
